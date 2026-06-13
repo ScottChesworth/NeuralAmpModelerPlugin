@@ -15,16 +15,17 @@ BINARY_NAME = NeuralAmpModeler
 
 // ------------------------------
 // HEADER AND LIBRARY SEARCH PATHS
-EXTRA_INC_PATHS =  $(IPLUG2_ROOT)/../eigen $(IGRAPHICS_INC_PATHS)
-EXTRA_LIB_PATHS = $(IGRAPHICS_LIB_PATHS)
-EXTRA_LNK_FLAGS = -framework Accelerate -framework Metal -framework MetalKit // -framework WebKit //$(IGRAPHICS_LNK_FLAGS)
+ACCESSKIT_DIR = $(IPLUG2_ROOT)/../Dependencies/AccessKit
+EXTRA_INC_PATHS =  $(ACCESSKIT_DIR)/include $(IPLUG2_ROOT)/../eigen $(IGRAPHICS_INC_PATHS)
+EXTRA_LIB_PATHS = $(ACCESSKIT_DIR)/lib/mac/$(CURRENT_ARCH) $(IGRAPHICS_LIB_PATHS)
+EXTRA_LNK_FLAGS = -laccesskit -framework AppKit -framework Foundation -framework CoreFoundation -framework Accelerate -framework Metal -framework MetalKit // -framework WebKit //$(IGRAPHICS_LNK_FLAGS)
 
 // EXTRA_APP_DEFS =
 // EXTRA_PLUGIN_DEFS =
 
 //------------------------------
 // PREPROCESSOR MACROS
-EXTRA_ALL_DEFS = OBJC_PREFIX=vNeuralAmpModeler SWELL_APP_PREFIX=Swell_vNeuralAmpModeler IGRAPHICS_NANOVG IGRAPHICS_METAL GRAYED_ALPHA=0.5f NAM_ENABLE_A2_FAST
+EXTRA_ALL_DEFS = OBJC_PREFIX=vNeuralAmpModeler SWELL_APP_PREFIX=Swell_vNeuralAmpModeler IGRAPHICS_NANOVG IGRAPHICS_METAL GRAYED_ALPHA=0.5f NAM_ENABLE_A2_FAST IGRAPHICS_ACCESSKIT
 //EXTRA_DEBUG_DEFS =
 //EXTRA_RELEASE_DEFS =
 //EXTRA_TRACER_DEFS =
