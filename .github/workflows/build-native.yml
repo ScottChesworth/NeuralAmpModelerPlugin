@@ -83,18 +83,14 @@ jobs:
         with:
           path: artifacts
 
-      - name: Zip each platform build
+      - name: Collect release files (exclude debug symbols)
         run: |
           mkdir -p release
-          cd artifacts
-          for dir in */; do
-            name="${dir%/}"
-            # Strip .dSYM debug-symbol bundles before zipping (they remain in the CI artifact);
-            # testers only need the runnable .app / .vst3 / .component
-            find "$dir" -name '*.dSYM' -prune -exec rm -rf {} +
-            (cd "$dir" && zip -r "../../release/${name}.zip" .)
-          done
-          ls -la ../release
+          # makedist already produces a ready-to-use build zip per platform, plus a separate debug-symbol
+          # zip (*-dSYMs.zip on mac, *-pdbs.zip on win). Attach only the build zips so testers get a clean,
+          # single-unzip download without the bulky debug symbols (which remain in the CI artifacts).
+          find artifacts -name '*.zip' ! -name '*-dSYMs.zip' ! -name '*-pdbs.zip' -exec cp {} release/ \;
+          ls -la release
 
       - name: Create / update release
         uses: softprops/action-gh-release@v2
