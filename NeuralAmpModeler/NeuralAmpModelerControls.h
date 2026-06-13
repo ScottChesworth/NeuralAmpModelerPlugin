@@ -391,12 +391,22 @@ public:
     const auto rightButtonBounds = padded.ReduceFromLeft(buttonWidth);
     const auto fileNameButtonBounds = padded;
 
+    // Accessible names for the icon buttons, with the item type for context (model vs impulse response)
+    const char* itemNoun = (strcmp(mExtension.Get(), "nam") == 0) ? "model" : "impulse response";
+    WDL_String loadLabel, prevLabel, nextLabel;
+    loadLabel.SetFormatted(64, "Load %s", itemNoun);
+    prevLabel.SetFormatted(64, "Previous %s", itemNoun);
+    nextLabel.SetFormatted(64, "Next %s", itemNoun);
+
     AddChildControl(new NAMSquareButtonControl(loadFileButtonBounds, DefaultClickActionFunc, mLoadSVG))
-      ->SetAnimationEndActionFunction(loadFileFunc);
+      ->SetAnimationEndActionFunction(loadFileFunc)
+      ->SetAccessibilityLabel(loadLabel.Get());
     AddChildControl(new NAMSquareButtonControl(leftButtonBounds, DefaultClickActionFunc, mLeftSVG))
-      ->SetAnimationEndActionFunction(prevFileFunc);
+      ->SetAnimationEndActionFunction(prevFileFunc)
+      ->SetAccessibilityLabel(prevLabel.Get());
     AddChildControl(new NAMSquareButtonControl(rightButtonBounds, DefaultClickActionFunc, mRightSVG))
-      ->SetAnimationEndActionFunction(nextFileFunc);
+      ->SetAnimationEndActionFunction(nextFileFunc)
+      ->SetAccessibilityLabel(nextLabel.Get());
     AddChildControl(mFileNameControl = new NAMFileNameControl(fileNameButtonBounds, mDefaultLabelStr.Get(), mStyle))
       ->SetAnimationEndActionFunction(chooseFileFunc);
 
@@ -830,7 +840,8 @@ public:
       static_cast<NAMSettingsPageControl*>(pCaller->GetParent())->HideAnimated(true);
     };
     AddNamedChildControl(
-      new NAMSquareButtonControl(CornerButtonArea(GetRECT()), closeAction, mCloseSVG), mControlNames.close);
+      new NAMSquareButtonControl(CornerButtonArea(GetRECT()), closeAction, mCloseSVG), mControlNames.close)
+      ->SetAccessibilityLabel("Close settings");
 
     OnResize();
   }

@@ -1,0 +1,2 @@
+AccessKit C bindings v0.22.1 (https://github.com/AccessKit/accesskit-c/releases/tag/0.22.1)
+Windows x86_64 MSVC static lib + header. Static link requires: bcrypt ntdll propsys runtimeobject uiautomationcore userenv ws2_32

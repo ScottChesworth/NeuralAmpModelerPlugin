@@ -259,15 +259,18 @@ NeuralAmpModeler::NeuralAmpModeler(const InstanceInfo& info)
       ->SetAnimationEndActionFunction(showSlimOverlay)
       ->Hide(true);
 
-    pGraphics->AttachControl(new ISVGSwitchControl(irSwitchArea, {irIconOffSVG, irIconOnSVG}, kIRToggle));
+    pGraphics->AttachControl(new ISVGSwitchControl(irSwitchArea, {irIconOffSVG, irIconOnSVG}, kIRToggle))
+      ->SetAccessibilityLabel("Impulse response");
     pGraphics->AttachControl(
       new NAMFileBrowserControl(irArea, kMsgTagClearIR, defaultIRString.c_str(), "wav", loadIRCompletionHandler, style,
                                 fileSVG, crossSVG, leftArrowSVG, rightArrowSVG, fileBackgroundBitmap, globeSVG,
                                 "Get IRs", getUrl),
       kCtrlTagIRFileBrowser);
     pGraphics->AttachControl(
-      new NAMSwitchControl(ngToggleArea, kNoiseGateActive, "Noise Gate", style, switchHandleBitmap));
-    pGraphics->AttachControl(new NAMSwitchControl(eqToggleArea, kEQActive, "EQ", style, switchHandleBitmap));
+      new NAMSwitchControl(ngToggleArea, kNoiseGateActive, "Noise Gate", style, switchHandleBitmap))
+      ->SetAccessibilityLabel("Noise Gate");
+    pGraphics->AttachControl(new NAMSwitchControl(eqToggleArea, kEQActive, "EQ", style, switchHandleBitmap))
+      ->SetAccessibilityLabel("EQ");
 
     // The knobs
     pGraphics->AttachControl(new NAMKnobControl(inputKnobArea, kInputLevel, "", style, knobBackgroundBitmap));
@@ -292,6 +295,7 @@ NeuralAmpModeler::NeuralAmpModeler(const InstanceInfo& info)
           pGraphics->GetControlWithTag(kCtrlTagSettingsBox)->As<NAMSettingsPageControl>()->HideAnimated(false);
         },
         gearSVG))
+      ->SetAccessibilityLabel("Settings")
       ->SetFocusOrder(1); // tab to the settings gear last, after the main controls
 
     pGraphics
