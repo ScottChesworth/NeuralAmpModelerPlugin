@@ -408,6 +408,12 @@ public:
     mGetButton = new NAMGetButtonControl(clearAndGetButtonBounds, mGetButtonLabel, mGetButtonURL, mGlobeSVG);
     AddChildControl(mGetButton);
 
+    // Keyboard focus: keep only the load / prev / next buttons as focus stops; the filename, clear and
+    // "get" buttons are redundant tab stops
+    mFileNameControl->SetFocusable(false);
+    mClearButton->SetFocusable(false);
+    mGetButton->SetFocusable(false);
+
     // initialize control visibility
     SetBrowserState(NAMBrowserState::Empty);
   }
