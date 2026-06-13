@@ -89,7 +89,9 @@ jobs:
           cd artifacts
           for dir in */; do
             name="${dir%/}"
-            (cd "$dir" && zip -r "../../release/${name}.zip" .)
+            # Exclude .dSYM debug-symbol bundles from the shared zip (they stay in the CI artifact);
+            # testers only need the runnable .app / .vst3 / .component
+            (cd "$dir" && zip -r "../../release/${name}.zip" . -x '*.dSYM/*' '*.dSYM')
           done
           ls -la ../release
 
