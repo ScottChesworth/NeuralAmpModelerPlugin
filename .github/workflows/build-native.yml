@@ -69,6 +69,42 @@ jobs:
         name: ${{env.PROJECT_NAME}}-${{matrix.artifact_ext}}
         path: ${{env.PROJECT_NAME}}/${{matrix.build_dir}}/out
 
+  # Publish the built mac + win binaries as a downloadable GitHub Release (no login required to download
+  # release assets, unlike workflow artifacts) - useful for sharing test builds with external testers.
+  release:
+    name: Publish test-build release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Zip each platform build
+        run: |
+          mkdir -p release
+          cd artifacts
+          for dir in */; do
+            name="${dir%/}"
+            (cd "$dir" && zip -r "../../release/${name}.zip" .)
+          done
+          ls -la ../release
+
+      - name: Create / update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: accessibility-test-${{ github.run_number }}
+          name: Accessibility test build ${{ github.run_number }}
+          body: |
+            Unsigned accessibility test builds (macOS + Windows) of NeuralAmpModeler.
+
+            macOS is unsigned: right-click the app/plug-in and choose Open, or run
+            `xattr -dr com.apple.quarantine <path>` to get past Gatekeeper.
+          files: release/*.zip
+
   # test:
   #   name: Test Native
   #   needs: build
