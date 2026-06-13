@@ -728,10 +728,17 @@ public:
     if (hide == false)
     {
       mHide = false;
+      // Constrain keyboard focus to this page. Remember where focus was so it can be restored on close.
+      // Focus is moved into the page once its children become visible (in the animation-end callback below).
+      mReturnFocusControl = GetUI()->GetFocusedControl();
+      GetUI()->SetFocusScope(this);
     }
     else // hide subcontrols immediately
     {
       ForAllChildrenFunc([hide](int childIdx, IControl* pChild) { pChild->Hide(hide); });
+      // Release the focus constraint and return focus to wherever it was before the page opened
+      GetUI()->SetFocusScope(nullptr);
+      GetUI()->SetControlFocus(mReturnFocusControl);
     }
 
     SetAnimation(
@@ -747,6 +754,11 @@ public:
         {
           pCaller->OnEndAnimation();
           IContainerBase::Hide(mWillHide);
+
+          // The page is now fully shown and its children are visible, so move keyboard focus into the page
+          if (!mWillHide)
+            GetUI()->MoveKeyboardFocus(false);
+
           GetUI()->SetAllControlsDirty();
           return;
         }
@@ -839,6 +851,7 @@ private:
   ISVG mCloseSVG;
   int mAnimationTime = 200;
   bool mWillHide = false;
+  IControl* mReturnFocusControl = nullptr; // control to restore keyboard focus to when the page closes
 
   // Names for controls
   // Make sure that these are all unique and that you use them with AddNamedChildControl
